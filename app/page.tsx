@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import FrozenKeyboard from "@/components/FrozenKeyboard";
 import SmoothScroll from "@/components/smooth-scroll";
 import Reveal from "@/components/Reveal";
 import SectionNav from "@/components/SectionNav";
 import CopyEmail from "@/components/CopyEmail";
 import SeasonPicker from "@/components/SeasonPicker";
-import LanguagePicker from "@/components/LanguagePicker";
+import ContactForm from "@/components/ContactForm";
 import ProjectModal, {
   type ProjectDetail,
 } from "@/components/ProjectModal";
@@ -15,6 +16,7 @@ import { useLanguage } from "@/components/LanguageProvider";
 import { useIsMobile } from "@/lib/useIsMobile";
 import { SKILLS_FLAT } from "@/lib/skills";
 import type { Lang } from "@/lib/i18n";
+import type { PortfolioConfig } from "@/lib/portfolio-config";
 
 const EMAIL = "josemariaalberobelamendia@gmail.com";
 
@@ -241,7 +243,32 @@ function HeroWord({
 export default function Home() {
   const { t, lang } = useLanguage();
   const isMobile = useIsMobile();
-  const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const [activeProject, setActiveProject] = useState<ProjectDetail | null>(null);
+  const [config, setConfig] = useState<PortfolioConfig | null>(null);
+
+  useEffect(() => {
+    fetch("/api/portfolio")
+      .then((response) => response.ok ? response.json() as Promise<PortfolioConfig> : Promise.reject())
+      .then(setConfig)
+      .catch(() => undefined);
+  }, []);
+
+  useEffect(() => {
+    if (!config?.profile.faviconUrl) return;
+    let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      document.head.appendChild(link);
+    }
+    link.href = config.profile.faviconUrl;
+  }, [config?.profile.faviconUrl]);
+
+  const liveProjects = config?.projects ?? projects;
+  const liveExperiences = config?.experiences ?? experiences;
+  const email = config?.profile.email ?? EMAIL;
+  const github = config?.social.github ?? "https://github.com/Txemalon";
+  const linkedin = config?.social.linkedin ?? "https://es.linkedin.com/in/jose-mar%C3%ADa-albero-belamendia-b9319a246";
 
   return (
     <SmoothScroll>
@@ -258,24 +285,19 @@ export default function Home() {
         {/* Header */}
         <header className="fixed top-0 inset-x-0 z-50 px-6 sm:px-10 md:px-14 py-5 flex items-center justify-between pointer-events-none">
           <div className="flex items-center gap-3 pointer-events-auto">
-            <span
-              data-cursor="hover"
-              className="text-sm font-semibold tracking-tight text-ice-100 whitespace-nowrap"
-            >
-              Txema Albero
-            </span>
+            {config?.profile.logoUrl ? <Image src={config.profile.logoUrl} alt={config.profile.name} width={144} height={32} unoptimized className="h-8 w-auto max-w-36 object-contain" /> : <span data-cursor="hover" className="text-sm font-semibold tracking-tight text-ice-100 whitespace-nowrap">{config?.profile.name ?? "Txema Albero"}</span>}
             {/* Wrapper (not the pill itself) carries the hide: .status-pill
                 hard-sets display:inline-flex, which beats Tailwind's .hidden
                 due to CSS source order, so hiding must happen on a parent. */}
             <span className="hidden md:inline-flex">
-              <span className="status-pill">{t("header.availability")}</span>
+              <span className="status-pill">{config ? pick(config.profile.availability, lang) : t("header.availability")}</span>
             </span>
           </div>
           <div className="flex items-center gap-2 pointer-events-auto">
             <SeasonPicker />
             <span className="hidden md:inline-flex">
             <a
-              href="https://github.com/Txemalon/3d-portfolio"
+              href={config?.social.repository ?? "https://github.com/Txemalon/3d-portfolio"}
               target="_blank"
               rel="noopener noreferrer"
               data-cursor="hover"
@@ -287,7 +309,6 @@ export default function Home() {
               <span>GitHub</span>
             </a>
             </span>
-            <LanguagePicker />
           </div>
         </header>
 
@@ -314,17 +335,17 @@ export default function Home() {
                 {t("hero.greeting")}
               </p>
               <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-[8.5rem] font-bold tracking-[-0.03em] text-ice-50 leading-[0.92] whitespace-nowrap">
-                <HeroWord text="Txema" delay={120} />
+                <HeroWord text={config?.profile.firstName ?? "Txema"} delay={120} />
                 <br />
-                <HeroWord text="Albero" delay={260} className="text-ice-400" />
+                <HeroWord text={config?.profile.lastName ?? "Albero"} delay={260} className="text-ice-400" />
               </h1>
               <p
                 className="mt-8 text-base sm:text-lg md:text-xl text-ice-200 max-w-xl leading-relaxed fade-in-up"
                 style={{ ["--d" as string]: "520ms" }}
               >
-                {t("hero.roleLine")}
+                {config ? pick(config.profile.role, lang) : t("hero.roleLine")}
                 <br />
-                {t("hero.tagline")}
+                {config ? pick(config.profile.tagline, lang) : t("hero.tagline")}
               </p>
 
               {/* CTAs */}
@@ -333,7 +354,7 @@ export default function Home() {
                 style={{ ["--d" as string]: "700ms" }}
               >
                 <a
-                  href={lang === "en" ? "/cv_en.pdf" : "/cv.pdf"}
+                  href={config?.profile.resumeEnUrl ?? "/cv_en.pdf"}
                   target="_blank"
                   rel="noopener noreferrer"
                   data-cursor="hover"
@@ -366,7 +387,7 @@ export default function Home() {
                     so desktop keeps everything on a single line. */}
                 <div className="basis-full h-0 md:hidden" aria-hidden />
                 <a
-                  href="https://es.linkedin.com/in/jose-mar%C3%ADa-albero-belamendia-b9319a246"
+                  href={linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                   data-cursor="hover"
@@ -379,7 +400,7 @@ export default function Home() {
                   </svg>
                 </a>
                 <a
-                  href="https://github.com/Txemalon"
+                  href={github}
                   target="_blank"
                   rel="noopener noreferrer"
                   data-cursor="hover"
@@ -490,7 +511,7 @@ export default function Home() {
             </div>
 
             <div className="relative z-10 max-w-3xl mx-auto space-y-6">
-              {experiences.map((exp, idx) => (
+              {liveExperiences.map((exp, idx) => (
                 <Reveal
                   key={`${exp.company}-${idx}`}
                   delay={idx * 120}
@@ -548,7 +569,7 @@ export default function Home() {
           </section>
 
           {/* Projects */}
-          {projects.map((p) => (
+          {liveProjects.map((p) => (
             <section
               key={p.num}
               data-kb-section={p.section}
@@ -669,12 +690,15 @@ export default function Home() {
                 </h2>
               </Reveal>
               <Reveal delay={160}>
-                <p className="text-ice-200 mb-10">{t("contact.body")}</p>
+                <div className="text-ice-200 mb-10">
+                  <p>{config ? pick(config.profile.contactBody, lang) : t("contact.body")}</p>
+                  {config?.profile.location && <p className="mt-3 text-sm text-ice-400">{config.profile.location}</p>}
+                </div>
               </Reveal>
               <Reveal delay={240}>
                 <div className="flex flex-wrap gap-3 pointer-events-auto">
                   <CopyEmail
-                    email={EMAIL}
+                    email={email}
                     className="frost-btn frost-btn--primary"
                   >
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -684,14 +708,14 @@ export default function Home() {
                     {t("contact.copyEmail")}
                   </CopyEmail>
                   <a
-                    href={`mailto:${EMAIL}`}
+                    href={`mailto:${email}`}
                     data-cursor="hover"
                     className="frost-btn"
                   >
                     {t("contact.openMail")}
                   </a>
                   <a
-                    href="https://github.com/Txemalon"
+                    href={github}
                     target="_blank"
                     rel="noopener noreferrer"
                     data-cursor="hover"
@@ -700,7 +724,7 @@ export default function Home() {
                     {t("contact.github")}
                   </a>
                   <a
-                    href="https://es.linkedin.com/in/jose-mar%C3%ADa-albero-belamendia-b9319a246"
+                    href={linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
                     data-cursor="hover"
@@ -708,12 +732,17 @@ export default function Home() {
                   >
                     {t("contact.linkedin")}
                   </a>
+                  {config?.social.twitter && <a href={config.social.twitter} target="_blank" rel="noopener noreferrer" data-cursor="hover" className="frost-btn">X / Twitter</a>}
+                  {config?.profile.phone && <a href={`tel:${config.profile.phone}`} data-cursor="hover" className="frost-btn">{config.profile.phone}</a>}
                 </div>
+              </Reveal>
+              <Reveal delay={280}>
+                <ContactForm />
               </Reveal>
             </div>
             <Reveal delay={320}>
               <p className="mt-14 text-[11px] uppercase tracking-[0.25em] text-ice-400">
-                {t("contact.footer")}
+                {config ? pick(config.profile.footer, lang) : t("contact.footer")}
               </p>
             </Reveal>
           </section>

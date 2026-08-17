@@ -8,9 +8,7 @@ import MagneticTargets from "@/components/MagneticTargets";
 import SeasonProvider, {
   SEASON_BOOT_SCRIPT,
 } from "@/components/SeasonProvider";
-import LanguageProvider, {
-  LANG_BOOT_SCRIPT,
-} from "@/components/LanguageProvider";
+import LanguageProvider from "@/components/LanguageProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,21 +22,18 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Txema Albero — Software Engineer & Tech Lead",
-  description:
-    "Portfolio inmersivo de Txema Albero — Software Engineer / Tech Lead. Experiencias web 3D con Next.js y React Three Fiber.",
+  description: "Immersive portfolio of Txema Albero — Software Engineer and Tech Lead. Interactive 3D experiences built with Next.js and React Three Fiber.",
   authors: [{ name: "Txema Albero" }],
   openGraph: {
     title: "Txema Albero — Software Engineer & Tech Lead",
-    description:
-      "Portfolio inmersivo con escena 3D interactiva. Next.js, React Three Fiber, GLSL.",
+    description: "Immersive portfolio with an interactive 3D scene built with Next.js, React Three Fiber, and GLSL.",
     type: "website",
-    locale: "es_ES",
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: "Txema Albero — Software Engineer & Tech Lead",
-    description:
-      "Portfolio inmersivo con escena 3D interactiva. Next.js, React Three Fiber, GLSL.",
+    description: "Immersive portfolio with an interactive 3D scene built with Next.js, React Three Fiber, and GLSL.",
   },
 };
 
@@ -54,7 +49,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="es"
+      lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
@@ -62,7 +57,6 @@ export default function RootLayout({
         {/* Run synchronously before hydration to apply the user's stored
             season + language — avoids a flash of the default values. */}
         <script dangerouslySetInnerHTML={{ __html: SEASON_BOOT_SCRIPT }} />
-        <script dangerouslySetInnerHTML={{ __html: LANG_BOOT_SCRIPT }} />
       </head>
       <body
         className="min-h-full flex flex-col"

@@ -26,11 +26,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  // Emits a minimal server bundle at `.next/standalone/` so the Docker
-  // runtime image can drop npm/node_modules entirely and just run
-  // `node server.js`. Trims the final image to ~100 MB.
-  output: "standalone",
-
+  turbopack: { root: process.cwd() },
   async headers() {
     return [
       {

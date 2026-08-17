@@ -31,6 +31,63 @@
   --vignette: rgba(5, 11, 22, 0.7);
 }
 
+/* Private /modify editor */
+.admin-shell { position: relative; z-index: 100; min-height: 100vh; padding: 32px; color: #e9f3ff; background: #07101c; font-family: var(--font-geist-sans), sans-serif; }
+.admin-shell * { box-sizing: border-box; }
+.admin-header { max-width: 1180px; margin: 0 auto 28px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.admin-header h1, .admin-login h1 { margin: 4px 0 8px; font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1; letter-spacing: -.04em; }
+.admin-header p, .admin-section__head p, .admin-login p { color: #91a4b9; }
+.admin-eyebrow { margin: 0; color: #71d4ff !important; font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+.admin-header__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.admin-header__actions a, .admin-primary, .admin-secondary, .admin-danger, .admin-upload__button { min-height: 40px; padding: 10px 15px; border: 1px solid #2b4157; border-radius: 10px; background: #102033; color: #e9f3ff; font: inherit; font-size: 13px; cursor: pointer; text-decoration: none; transition: border-color .15s, background .15s, transform .15s; }
+.admin-primary { border-color: #4bbbe9; background: #4bbbe9; color: #04121d; font-weight: 750; }
+.admin-secondary:hover, .admin-header__actions a:hover, .admin-upload__button:hover { border-color: #71d4ff; background: #172b40; }
+.admin-primary:hover { background: #78d6fb; }
+.admin-primary:active, .admin-secondary:active { transform: translateY(1px); }
+.admin-primary:disabled { opacity: .55; cursor: wait; }
+.admin-section { max-width: 1180px; margin: 0 auto 22px; padding: 24px; border: 1px solid #1e344a; border-radius: 18px; background: rgba(12, 27, 43, .94); box-shadow: 0 18px 60px rgba(0,0,0,.16); }
+.admin-section__head, .admin-card__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.admin-section__head h2 { margin: 0 0 4px; font-size: 20px; }
+.admin-section__head p { margin: 0; font-size: 13px; }
+.admin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.admin-field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.admin-field > span { color: #aebed0; font-size: 12px; font-weight: 650; }
+.admin-field input, .admin-field textarea { width: 100%; border: 1px solid #294159; border-radius: 9px; outline: none; background: #081522; color: #f3f8ff; padding: 11px 12px; font: inherit; font-size: 14px; }
+.admin-field textarea { resize: vertical; line-height: 1.5; }
+.admin-field input:focus, .admin-field textarea:focus { border-color: #62ccef; box-shadow: 0 0 0 3px rgba(98,204,239,.12); }
+.admin-field--wide { grid-column: span 2; }
+.admin-repeat { display: grid; gap: 18px; }
+.admin-card { border: 1px solid #263c52; border-radius: 14px; padding: 18px; background: #0a1826; }
+.admin-card__head h3 { margin: 0; font-size: 15px; }
+.admin-danger { min-height: 34px; padding: 7px 11px; border-color: #5c3040; background: transparent; color: #ff9bac; }
+.admin-danger:hover { background: #331823; }
+.admin-upload { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 8px; }
+.admin-upload__button { position: relative; overflow: hidden; text-align: center; }
+.admin-upload__button input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.admin-warning, .admin-status { max-width: 1180px; margin: 0 auto 18px; padding: 13px 16px; border-radius: 10px; background: #173049; color: #beeaff; font-size: 13px; }
+.admin-warning { border: 1px solid #865f25; background: #2b2417; color: #ffd99b; }
+.admin-warning code, .admin-login code { font-family: var(--font-geist-mono), monospace; }
+.admin-status--error { background: #351721; color: #ffb0bc; }
+.admin-check { grid-column: span 2; display: flex; align-items: center; gap: 9px; color: #b9c8d7; font-size: 13px; }
+.admin-check input { width: 17px; height: 17px; accent-color: #4bbbe9; }
+.admin-savebar { position: sticky; z-index: 10; bottom: 16px; max-width: 1180px; margin: 18px auto 0; padding: 12px; display: flex; align-items: center; justify-content: flex-end; gap: 18px; border: 1px solid #2b4157; border-radius: 14px; background: rgba(7,16,28,.94); backdrop-filter: blur(14px); }
+.admin-savebar span { margin-right: auto; color: #aebed0; font-size: 13px; }
+.admin-login { display: grid; place-items: center; }
+.admin-login__card { width: min(440px, 100%); padding: 30px; border: 1px solid #22394e; border-radius: 18px; background: #0c1b2b; }
+.admin-login__card .admin-field { margin: 24px 0 14px; }
+.admin-login__card .admin-primary { width: 100%; }
+.admin-loading { display: grid; place-items: center; }
+@media (max-width: 760px) { .admin-shell { padding: 20px 14px; } .admin-header { align-items: flex-start; flex-direction: column; } .admin-grid { grid-template-columns: 1fr; } .admin-field--wide, .admin-check { grid-column: auto; } .admin-section { padding: 18px 14px; } .admin-upload { grid-template-columns: 1fr; } .admin-savebar { bottom: 8px; } }
+.contact-form { margin-top: 24px; display: grid; gap: 12px; }
+.contact-form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.contact-form label { display: grid; gap: 6px; color: var(--ice-300); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.contact-form input, .contact-form textarea { width: 100%; border: 1px solid var(--ice-700); border-radius: 10px; background: rgba(5,15,28,.58); color: var(--ice-50); padding: 11px 12px; font: inherit; font-size: 14px; letter-spacing: normal; text-transform: none; outline: none; backdrop-filter: blur(10px); }
+.contact-form input:focus, .contact-form textarea:focus { border-color: var(--ice-300); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ice-300) 16%, transparent); }
+.contact-form textarea { resize: vertical; }
+.contact-form__footer { display: flex; align-items: center; gap: 14px; }
+.contact-form__footer p { color: var(--ice-200); font-size: 12px; }
+@media (max-width: 560px) { .contact-form__row { grid-template-columns: 1fr; } }
+
 :root[data-season="spring"] {
   --background: #07160a;
   --foreground: #eaffec;
